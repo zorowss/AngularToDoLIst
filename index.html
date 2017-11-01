@@ -1,0 +1,103 @@
+<!doctype html>
+<html ng-app="todoApp">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
+    <script src="http://mbenford.github.io/ngTagsInput/js/ng-tags-input.min.js"></script>
+    <link rel="stylesheet" href="http://mbenford.github.io/ngTagsInput/css/ng-tags-input.min.css" />
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .center{
+         text-align:center;
+        }
+        .float-right{
+           text-align:right;
+        }
+    </style>
+    <script>
+        angular.module('todoApp', []);
+        angular.module('todoApp').controller('ToDoListController',[ToDoListController])
+
+        function ToDoListController(){
+            $ctrl = this;
+
+            if(JSON.parse(localStorage.getItem("toDoList"))){
+                $ctrl.toDoList= JSON.parse(localStorage.getItem("toDoList"));
+            }
+            else{
+                localStorage.setItem("toDoList", "[]");
+                $ctrl.toDoList= JSON.parse(localStorage.getItem("toDoList"));
+            }
+
+            if(JSON.parse(localStorage.getItem("doingList"))){
+                $ctrl.toDoList= JSON.parse(localStorage.getItem("doingList"));
+
+            }
+            else{
+                localStorage.setItem("doingList", "[]");
+                $ctrl.toDoList= JSON.parse(localStorage.getItem("doingList"));
+            }
+
+            if(JSON.parse(localStorage.getItem("doneList"))){
+                $ctrl.toDoList= JSON.parse(localStorage.getItem("doneList"));
+            }
+            else{
+                localStorage.setItem("doneList", "[]");
+                $ctrl.toDoList= JSON.parse(localStorage.getItem("doneList"));
+            }
+
+            $ctrl.addNote = function(){
+                var lastId = ($ctrl.toDoList.length>0)?$ctrl.toDoList[$ctrl.toDoList.length-1].id:0;
+                var id = lastId?lastId+1:1;
+                var newNote = {id:id,content:$ctrl.newNote};
+                $ctrl.toDoList.push(newNote);
+                localStorage.setItem("toDoList", JSON.stringify($ctrl.toDoList));
+                $ctrl.newNote = '';
+                $ctrl.showAdd = false;
+            }
+
+            $ctrl.deleteNote = function(){
+
+            }
+
+        }
+    </script>
+</head>
+<body>
+<center><h2>To Do List App</h2></center>
+<div ng-controller="ToDoListController as $ctrl" class="container ">
+    <button type="button"  ng-hide="$ctrl.showAdd" class="btn btn-primary float-right" ng-click="$ctrl.showAdd=true;">Add</button>
+    <form ng-show="$ctrl.showAdd">
+        <input type="text" ng-model="$ctrl.newNote">
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="$ctrl.addNote()">Add</button>
+            <button class="btn btn-warning" type="button" ng-click="$ctrl.newNote='';$ctrl.showAdd=false;">Cancel</button>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-sm-4 center">
+            <h4>TO DO</h4>
+        </div>
+        <div class="col-sm-4 center">
+            <h4>DOING</h4>
+
+        </div>
+        <div class="col-sm-4 center">
+            <h4>DONE</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 ">
+            <div ng-repeat="todo in $ctrl.toDoList">{{todo.content}} <span class="glyphicon glyphicon-remove"></span></div>
+        <div class="col-sm-4 ">
+
+        </div>
+        <div class="col-sm-4 ">
+
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>
